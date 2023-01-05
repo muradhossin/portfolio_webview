@@ -9,6 +9,8 @@ class WebviewPage extends StatefulWidget {
 }
 
 class _WebviewPageState extends State<WebviewPage> {
+
+  late WebViewController _webViewController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +20,22 @@ class _WebviewPageState extends State<WebviewPage> {
 
         ),
       ),
-      body: WebView(
-        initialUrl: "https://sites.google.com/diu.edu.bd/muradhossin/home",
-        javascriptMode: JavascriptMode.unrestricted,
+      body: WillPopScope(
+        onWillPop: () async{
+          if(await _webViewController.canGoBack()){
+            _webViewController.goBack();
+            return false;
+          }else{
+            return true;
+          }
+        },
+        child: WebView(
+          initialUrl: "https://sites.google.com/diu.edu.bd/muradhossin/home",
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (controller) {
+            _webViewController = controller;
+          },
+        ),
       ),
     );
   }
